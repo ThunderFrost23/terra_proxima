@@ -1,0 +1,11 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = ParseurCSV
+build_property.ProjectDir = c:\Users\thega\Desktop\Travails\Epitech\T-ESP-800-esp800-33787-TerraProxima-1\2 - Datasets\Parseur\ParseurCSV\

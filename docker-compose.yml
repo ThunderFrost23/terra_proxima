@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+
+    app:
+        image: cyberduck/php-fpm-laravel:8.2
+        platform: linux/x86_64
+        container_name: proxima-app
+        restart: unless-stopped
+        volumes:
+            - ./:/var/www/
+            - ~/.ssh:/root/.ssh # can be useful for composer if you use private CVS
+        command: >
+            sh -c "php-fpm"
+        depends_on:
+            -   mysql
+        networks:
+            - proxima-admin
+
+    npm:
+        image: node:lts
+        container_name: proxima-node
+        working_dir: /var/www/
+        entrypoint: ["npm"] # docker-compose run --rm npm install // docker-compose run --rm npm run build
+        volumes:
+            - ./:/var/www/
+
+    mysql:
+        image: mysql:5.7
+        platform: linux/x86_64
+        container_name: proxima-mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - mysql-data:/var/lib/mysql
+        networks:
+            - proxima-admin
+
+    web:
+        image: nginx:alpine
+        container_name: proxima-web
+        restart: always
+        ports:
+            - "${DOCKER_WEB_PORT:-8300}:80"
+        volumes:
+            - ./:/var/www
+            - ./docker-compose/nginx:/etc/nginx/conf.d/
+        networks:
+            - proxima-admin
+
+volumes:
+    mysql-data:
+
+networks:
+    proxima-admin:
+        driver: bridge

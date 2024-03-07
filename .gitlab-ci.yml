@@ -13,6 +13,7 @@ build:
     - docker-php-ext-install gd pdo pdo_mysql zip
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - cp .env.example .env
+    - composer update
     - composer install --no-interaction
 
 test:

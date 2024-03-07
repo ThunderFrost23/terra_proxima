@@ -1,9 +1,20 @@
+# Fichier .gitlab-ci.yml
+
+# Spécification de l'image Docker à utiliser pour exécuter les étapes de la CI
 image: php:latest
 
+# Définition des étapes de la pipeline
 stages:
   - build
-#  - test
+  - test
 
+# Définition des caches
+cache:
+  paths:
+    - vendor/
+    - ~/.composer/
+
+# Étape de construction
 build:
   stage: build
   script:
@@ -11,15 +22,18 @@ build:
     - apt-get install -yqq git unzip libpng-dev libjpeg-dev libfreetype6-dev libzip-dev
     - docker-php-ext-configure gd --with-freetype --with-jpeg
     - docker-php-ext-install gd pdo pdo_mysql zip
+    - pecl install xdebug
+    - docker-php-ext-enable xdebug
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - cp .env.example .env
     - composer update
     - composer install --no-interaction
 
-# test:
-#   stage: test
-#   script:
+# Étape de test
+test:
+  stage: test
+  script:
     - cp .env.example .env
     - php artisan key:generate
     - php artisan migrate --force --seed
-    - vendor/bin/phpunit --coverage-text --colors=never
+    - php vendor/bin/phpunit --colors=never
